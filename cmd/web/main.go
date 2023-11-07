@@ -17,12 +17,20 @@ func main() {
 
 	tc, err := renderer.CreateTemplateCache()
 	if err != nil {
-		log.Fatal("cannot create template cache",err)
+		log.Fatal("cannot create template cache", err)
 	}
-	app.TemplateCache=tc
+	app.TemplateCache = tc
+	//this var to set use cache true or false, when in Dev mode
+	app.UseCache = false
 
-	http.HandleFunc("/", handler.MainHandler)
-	http.HandleFunc("/about", handler.AboutHandler)
+	repo := handler.NewRepo(&app)
+	handler.NewHandlers(repo)
+
+	//passing app variable to the render package
+	renderer.NewTemplate(&app)
+
+	http.HandleFunc("/", handler.Repo.MainHandler)
+	http.HandleFunc("/about", handler.Repo.AboutHandler)
 	fmt.Println("Server started on Port:", Port)
 	err = http.ListenAndServe(Port, nil)
 	if err != nil {

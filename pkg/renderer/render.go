@@ -10,22 +10,28 @@ import (
 	"github.com/TartuDen/webPage2/pkg/config"
 )
 
-var tc = make(map[string]*template.Template)
+// this var serves to pass data from main.go to render.go
+var app *config.AppConfig
 
+// NewTemplate sets the config for the template package
+func NewTemplate(a *config.AppConfig) {
+	app = a
+}
+
+// RendererTemplate renders template using html/template
 func RendererTemplate(w http.ResponseWriter, tmpl string) {
-	//get the template cache from AppConfig
-	templateCache:=config.AppConfig.TemplateCache
-	
-	//create a template cache
-	// templateCache, err := CreateTemplateCache()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	var templateCache map[string]*template.Template
+
+	if app.UseCache {
+		//get the template cache from AppConfig
+		templateCache = app.TemplateCache
+	} else {
+		templateCache, _ = CreateTemplateCache()
+	}
 
 	//get requested template from cache
 	t, ok := templateCache[tmpl]
 	if !ok {
-
 		log.Fatal(ok)
 	}
 
@@ -34,7 +40,7 @@ func RendererTemplate(w http.ResponseWriter, tmpl string) {
 	_ = t.Execute(buf, nil)
 
 	//render the template
-	_, err = buf.WriteTo(w)
+	_, err := buf.WriteTo(w)
 	if err != nil {
 		log.Println("error writting template to brwoser ", err)
 	}
