@@ -6,40 +6,42 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+
+	"github.com/TartuDen/webPage2/pkg/config"
 )
 
 var tc = make(map[string]*template.Template)
 
 func RendererTemplate(w http.ResponseWriter, tmpl string) {
+	//get the template cache from AppConfig
+	templateCache:=config.AppConfig.TemplateCache
+	
 	//create a template cache
-	templateCache, err := createTemplateCache()
-	if err != nil {
-		log.Println(err)
-	}
+	// templateCache, err := CreateTemplateCache()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
 	//get requested template from cache
 	t, ok := templateCache[tmpl]
 	if !ok {
 
-		log.Println(ok)
+		log.Fatal(ok)
 	}
 
 	//optional final error check
 	buf := new(bytes.Buffer)
-	err = t.Execute(buf, nil)
-	if err != nil {
-		log.Println(err)
-	}
+	_ = t.Execute(buf, nil)
 
 	//render the template
 	_, err = buf.WriteTo(w)
 	if err != nil {
-		log.Println(err)
+		log.Println("error writting template to brwoser ", err)
 	}
 
 }
 
-func createTemplateCache() (map[string]*template.Template, error) {
+func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 
 	//get all of the files named *.page.html(or tmpl) from ./template
