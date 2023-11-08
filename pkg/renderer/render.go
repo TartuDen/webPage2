@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/TartuDen/webPage2/pkg/config"
+	"github.com/TartuDen/webPage2/pkg/handler"
 )
 
 // this var serves to pass data from main.go to render.go
@@ -19,11 +20,11 @@ func NewTemplate(a *config.AppConfig) {
 }
 
 // RendererTemplate renders template using html/template
-func RendererTemplate(w http.ResponseWriter, tmpl string) {
+func RendererTemplate(w http.ResponseWriter, tmpl string, td *handler.TemplateData) {
 	var templateCache map[string]*template.Template
 
 	if app.UseCache {
-		//get the template cache from AppConfig
+		//get the template cache from AppConfig8
 		templateCache = app.TemplateCache
 	} else {
 		templateCache, _ = CreateTemplateCache()
