@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/TartuDen/webPage2/pkg/config"
-	"github.com/TartuDen/webPage2/pkg/handler"
+	"github.com/TartuDen/webPage2/pkg/models"
 )
 
 // this var serves to pass data from main.go to render.go
@@ -20,7 +20,7 @@ func NewTemplate(a *config.AppConfig) {
 }
 
 // RendererTemplate renders template using html/template
-func RendererTemplate(w http.ResponseWriter, tmpl string, td *handler.TemplateData) {
+func RendererTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
 	var templateCache map[string]*template.Template
 
 	if app.UseCache {
@@ -38,7 +38,7 @@ func RendererTemplate(w http.ResponseWriter, tmpl string, td *handler.TemplateDa
 
 	//optional final error check
 	buf := new(bytes.Buffer)
-	_ = t.Execute(buf, nil)
+	_ = t.Execute(buf, td)
 
 	//render the template
 	_, err := buf.WriteTo(w)
