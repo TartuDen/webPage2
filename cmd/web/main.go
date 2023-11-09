@@ -38,11 +38,18 @@ func main() {
 	// templates with the app configuration. This prepares the application to render HTML templates.
 	renderer.NewTemplate(&app)
 
-	http.HandleFunc("/", handler.Repo.MainHandler)
-	http.HandleFunc("/about", handler.Repo.AboutHandler)
+	// http.HandleFunc("/", handler.Repo.MainHandler)
+	// http.HandleFunc("/about", handler.Repo.AboutHandler)
 	fmt.Println("Server started on Port:", Port)
-	err = http.ListenAndServe(Port, nil)
-	if err != nil {
-		log.Fatal(err)
+	// err = http.ListenAndServe(Port, nil)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	srv := &http.Server{
+		Addr:    Port,
+		Handler: rounts(&app),
 	}
+	err = srv.ListenAndServe()
+	log.Fatal(err)
 }
